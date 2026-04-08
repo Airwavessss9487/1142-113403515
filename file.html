@@ -8,24 +8,27 @@
         body {
             font-family: Arial, sans-serif;
             margin: 50px;
-            background-color: #f0f0f0; /* 背景淺灰色，模擬截圖效果 */
+            background-color: #f0f0f0; /* 外圍深灰色背景 */
         }
 
-        /* 外層容器（模擬截圖中的白色畫布） */
+        /* 白色底容器（畫布） */
         .canvas {
             background-color: white;
             padding: 40px;
             border: 1px solid #ddd;
             box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            min-height: 300px;
-            position: relative;
+            width: 700px;         /* 設定固定寬度 */
+            min-height: 250px;    /* 設定最小高度 */
+            margin: 0 auto;       /* 居中顯示 */
+            
+            /* 關鍵：讓內部的 absolute 元素以這裡為基準 */
+            position: relative;   
         }
 
         /* 表格樣式 */
         table {
             border-collapse: collapse;
-            width: 300px;
-            background-color: white;
+            width: 250px;
         }
 
         th, td {
@@ -35,40 +38,37 @@
             font-weight: bold;
         }
 
-        /* 表頭灰色背景，白字 */
         th {
             background-color: #7f7f7f;
             color: white;
         }
 
-        /* 第 1、3 列（黃色背景） */
+        /* 黃色背景列 */
         tr:nth-child(2), tr:nth-child(4) {
             background-color: #ffff00;
         }
 
-        /* 第 2 列（白色背景） */
-        tr:nth-child(3) {
-            background-color: #ffffff;
-        }
-
-        /* --- 關鍵重點：右上角綠色框框 --- */
+        /* --- 修正後的綠色框框 --- */
         .fixed-box {
-            position: fixed;        /* 固定定位：不隨捲軸移動 */
-            top: 20px;             /* 距離視窗上方 20px */
-            right: 20px;           /* 距離視窗右方 20px */
-            width: 180px;          /* 方塊寬度 */
-            height: 120px;         /* 方塊高度 */
-            border: 4px solid #76b900; /* 綠色粗框 (重點在此) */
-            padding: 10px;         /* 框內文字與邊界的距離 */
-            background-color: white; /* 框內背景色 */
+            /* 改用 absolute，它會對齊最近的 relative 父層（即 .canvas） */
+            position: absolute;   
+            top: 40px;            /* 距離白色畫布上方 40px */
+            right: 40px;          /* 距離白色畫布右方 40px */
+            
+            width: 180px;
+            height: 120px;
+            border: 4px solid #76b900; /* 綠色粗框 */
+            padding: 10px;
+            background-color: white;
             font-size: 18px;
-            box-sizing: border-box; /* 確保邊框不會撐大寬度 */
+            box-sizing: border-box;
         }
     </style>
 </head>
 <body>
 
     <div class="canvas">
+        
         <table>
             <thead>
                 <tr>
@@ -93,8 +93,9 @@
         </table>
 
         <div class="fixed-box">
-            This div element has position: fixed;
+            This div element has position: absolute;
         </div>
+
     </div>
 
 </body>
