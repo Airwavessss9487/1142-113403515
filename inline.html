@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <title>CSS Layout Assignment</title>
+    <style>
+        /* 整體容器樣式，模擬圖片中的外框與陰影 */
+        .container {
+            border: 1px solid #ccc;
+            padding: 20px;
+            width: 700px;
+            line-height: 1.6;
+            font-family: serif;
+            box-shadow: 5px 5px 15px rgba(0,0,0,0.1);
+            margin: 20px auto;
+            position: relative;
+        }
+
+        /* 實作題目要求的 Some inline-blocks */
+        .highlight {
+            display: inline-block; /* 關鍵：設定為 inline-block */
+            background-color: yellow;
+            border: 1px solid blue;
+            padding: 2px 5px;
+            margin: 0 2px;
+            vertical-align: middle;
+        }
+
+        /* 實作題目要求的 A float div with overflow auto */
+        .float-box {
+            float: right;          /* 關鍵：向右浮動 */
+            width: 180px;
+            height: 150px;
+            border: 3px solid #76b900; /* 綠色邊框 */
+            overflow: auto;        /* 關鍵：內容超過時自動顯示捲軸 */
+            padding: 10px;
+            margin-left: 15px;
+            background-color: #fff;
+            font-size: 1.1em;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="float-box">
+        A float div with overflow auto. A float div with overflow auto. 
+        A float div with overflow auto. A float div with overflow auto.
+        A float div with overflow auto. A float div with overflow auto.
+    </div>
+
+    (Just long sentence.) Let me not to the marriage of true minds Admit impediments. 
+    <span class="highlight">Love</span> is not love Which alters when it alteration finds, Or bends with the remover to remove: O, no! it is an ever-fix`ed mark, That looks on tempests and is never shaken; It is the star to every wand'ring bark, Whose worth's unknown, although his height be taken. 
+    <span class="highlight">Love's</span> not Time's fool, though rosy lips and cheeks Within his bending sickle's compass come; 
+    <span class="highlight">Love</span> alters not with his brief hours and weeks, But bears it out even to the edge of doom. If this be error and upon me proved, I never writ, nor no man ever loved.
+</div>
+
+</body>
+</html>
