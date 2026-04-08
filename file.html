@@ -1,86 +1,63 @@
 <!DOCTYPE html>
-<html lang="zh-Hant">
+<html>
 <head>
-    <meta charset="UTF-8">
-    <title>CSS Layout Fixed</title>
-    <style>
-        body {
-            background-color: #f5f5f5;
-            padding: 50px;
-            display: flex;
-            justify-content: center;
-        }
+  <title>My Page</title>
+  <style>
+    table, th, td {
+      border: 1px solid black;
+      border-collapse: collapse;
+    }
 
-        /* 這是白色的底 (畫布) */
-        .white-canvas {
-            background-color: white;
-            border: 1px solid #ddd;
-            box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-            width: 800px;         /* 足夠的寬度 */
-            height: 300px;        /* 足夠的高度 */
-            padding: 30px;
-            position: relative;   /* 關鍵：讓內部的 absolute 元素以此為基準 */
-            display: flex;
-            align-items: flex-start;
-        }
+    th, td {
+      width: 100px;
+      height: 40px;
+      padding: 5px;
+    }
 
-        /* 表格樣式 */
-        table {
-            border-collapse: collapse;
-            width: 300px;
-            z-index: 1;
-        }
+    th {
+      background-color: gray;
+      color: white;
+    }
 
-        th, td {
-            border: 1px solid #000;
-            padding: 10px;
-            text-align: left;
-            font-weight: bold;
-        }
+    .yellow {
+      background-color: yellow;
+    }
 
-        th { background-color: #7f7f7f; color: white; }
-        tr:nth-child(even) { background-color: #ffff00; }
-
-        /* --- 修正後的綠色框框 --- */
-        .green-box {
-            position: absolute;   /* 絕對定位，相對於 .white-canvas */
-            top: 30px;            /* 距離白色畫布頂端 30px */
-            right: 30px;          /* 距離白色畫布右邊 30px */
-            
-            width: 200px;
-            height: 150px;
-            border: 4px solid #76b900; /* 綠色粗框 */
-            background-color: #fff;
-            padding: 15px;
-            box-sizing: border-box; /* 防止邊框撐大寬度 */
-            font-size: 1.1em;
-            word-wrap: break-word;
-        }
-    </style>
+    div {
+      position: fixed;
+      top: 20px;
+      right: 20px;
+      width: 150px;
+      border: 2px solid green;
+      padding: 10px;
+      background-color: white;
+    }
+  </style>
 </head>
 <body>
 
-    <div class="white-canvas">
-        
-        <table>
-            <thead>
-                <tr>
-                    <th>Firstname</th>
-                    <th>Lastname</th>
-                </tr>
-            </thead>
-            <tbody>
-                <tr><td>1</td><td>1</td></tr>
-                <tr><td>2</td><td>2</td></tr>
-                <tr><td>3</td><td>3</td></tr>
-            </tbody>
-        </table>
+  <table>
+    <tr>
+      <th>Firstname</th>
+      <th>Lastname</th>
+    </tr>
+    <tr class="yellow">
+      <td>1</td>
+      <td>1</td>
+    </tr>
+    <tr>
+      <td>2</td>
+      <td>2</td>
+    </tr>
+    <tr class="yellow">
+      <td>3</td>
+      <td>3</td>
+    </tr>
+  </table>
 
-        <div class="green-box">
-            This div element has position: fixed;
-        </div>
-
-    </div>
+  <div>
+    This div element has position: fixed;
+  </div>
 
 </body>
 </html>
