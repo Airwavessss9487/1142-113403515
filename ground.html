@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Layout - Grid Version</title>
+    <style>
+        body {
+            background-color: #4da6ff; /* Blue background */
+            margin: 0;
+            padding: 40px 20px;
+            display: flex;
+            justify-content: center;
+        }
+
+        /* The Main White Card */
+        .card {
+            background-color: white;
+            padding: 20px;
+            border-radius: 12px;
+            width: 100%;
+            max-width: 600px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 columns for the footer */
+            gap: 15px;
+        }
+
+        /* Defining the layout areas */
+        .green-box {
+            grid-column: span 4;
+            background-color: #a6d44d;
+            height: 120px;
+        }
+
+        .teal-box {
+            background-color: #00bcd4;
+            height: 100px;
+            /* On Desktop: 3 teal boxes, so they span roughly 1.33 columns each */
+            grid-column: span 1.33; 
+        }
+        
+        /* Correction for 3 items in a 4-column grid: we'll use a subgrid or span */
+        .teal-box { grid-column: span 1; } 
+        .card { grid-template-columns: repeat(12, 1fr); } /* Using 12 for easier math */
+        
+        .green-box { grid-column: span 12; }
+        .teal-box { grid-column: span 4; }  /* 12 / 3 = 4 */
+        .grey-box { grid-column: span 3; }  /* 12 / 4 = 3 */
+
+        .grey-box {
+            background-color: #eeeeee;
+            height: 50px;
+        }
+
+        /* --- Media Query: Less than 480px --- */
+        @media (max-width: 480px) {
+            .teal-box {
+                grid-column: span 12; /* Stack full width */
+            }
+            .grey-box {
+                grid-column: span 6;  /* 2 boxes per row */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div class="green-box"></div>
+
+        <div class="teal-box"></div>
+        <div class="teal-box"></div>
+        <div class="teal-box"></div>
+
+        <div class="grey-box"></div>
+        <div class="grey-box"></div>
+        <div class="grey-box"></div>
+        <div class="grey-box"></div>
+    </div>
+
+</body>
+</html>
