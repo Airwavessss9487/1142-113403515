@@ -3,52 +3,66 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Designer-Engineer Collaboration Button</title>
-    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" rel="stylesheet">
-    
+    <title>CSS Image Styling Layout</title>
     <style>
-        body {
+        /* Container to align all three elements exactly as shown */
+        .image-layout-container {
             display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-            margin: 0;
-            background-color: #f0f0f0;
+            justify-content: space-between; /* Space out to 33% / 150px / 33% */
+            align-items: center;           /* Vertically centers the middle circle */
+            width: 100%;
+            max-width: 1200px;
+            margin: 50px auto;
+            gap: 10px;                     /* Minimal gap between items */
         }
 
-        .spec-button {
-            /* Basic Box Model based on specs */
-            height: 22px;               /* size: h22 */
-            border-radius: 8px;         /* R8 */
-            
-            /* Visual Styles */
-            background-color: #ffffff;  /* background #ffffff */
-            border: 1px solid #f2f2f2;  /* outline 1px #f2f2f2 */
-            
-            /* Typography */
-            font-family: 'Roboto', sans-serif; /* Roboto Regular */
-            font-size: 13px;            /* 13px */
-            color: #2f2f2f;             /* Color: #2f2f2f */
-            
-            /* Layout Adjustment */
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0 12px;            /* Horizontal padding for text breathing room */
-            cursor: pointer;
-            box-sizing: border-box;     /* Ensures height stays exactly 22px */
-            transition: background-color 0.2s ease;
+        /* 1. Left Image: width 33%, height 300px, radius 18px, no distortion */
+        .img-left {
+            width: 33%;
+            height: 300px;
+            border-radius: 18px;
+            object-fit: cover;             /* Maintains aspect ratio (no distortion) */
+            display: block;
         }
 
-        /* Subtle hover effect for better UX */
-        .spec-button:hover {
-            background-color: #fafafa;
+        /* 2. Middle Image: circle, size 150px, border, no distortion */
+        .img-middle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;            /* Creates the circle shape */
+            border: 1px solid #000;        /* Black border as indicated */
+            object-fit: cover;             /* Maintains aspect ratio (no distortion) */
+            display: block;
+        }
+
+        /* 3. Right Image: width 33%, height 300px, WITH distortion */
+        .img-right {
+            width: 33%;
+            height: 300px;
+            object-fit: fill;              /* Forces the image to stretch (distortion) */
+            display: block;
+        }
+
+        /* Responsive adjustment for small screens */
+        @media (max-width: 600px) {
+            .image-layout-container {
+                flex-direction: column;
+            }
+            .img-left, .img-right {
+                width: 80%;
+            }
         }
     </style>
 </head>
 <body>
 
-    <button class="spec-button">查看資訊</button>
+    <div class="image-layout-container">
+        <img src="https://picsum.photos/id/10/800/1200" class="img-left" alt="Rounded No Distortion">
+
+        <img src="https://picsum.photos/id/1011/500/500" class="img-middle" alt="Circle Border">
+
+        <img src="https://picsum.photos/id/10/800/1200" class="img-right" alt="Distortion">
+    </div>
 
 </body>
 </html>
