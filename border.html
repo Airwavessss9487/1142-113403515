@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CSS Image Styling Practice</title>
+    <style>
+        body {
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            padding: 50px;
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+        }
+
+        .container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+            max-width: 1000px;
+        }
+
+        /* Image 1: No distortion, 18px radius, 33% width */
+        .img-rounded {
+            width: 33%;
+            height: 300px;
+            border-radius: 18px;
+            object-fit: cover; /* Prevents distortion */
+        }
+
+        /* Image 2: 150px circle, border, no distortion */
+        .img-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 2px solid #333;
+            object-fit: cover; /* Prevents distortion */
+        }
+
+        /* Image 3: Distortion, 33% width, 300px height */
+        .img-distorted {
+            width: 33%;
+            height: 300px;
+            object-fit: fill; /* Forces distortion to fill the container */
+        }
+
+        /* Placeholder styles for clarity */
+        img {
+            background-color: #ddd;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <img src="https://picsum.photos/id/10/800/1200" alt="Paris" class="img-rounded">
+
+        <img src="https://picsum.photos/id/1011/400/400" alt="Mountain" class="img-circle">
+
+        <img src="https://picsum.photos/id/10/800/1200" alt="Paris Distorted" class="img-distorted">
+    </div>
+
+</body>
+</html>
