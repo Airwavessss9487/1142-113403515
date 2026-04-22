@@ -3,63 +3,61 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>CSS Image Styling Practice</title>
+    <title>CSS Image Styling - Exact Dimensions</title>
     <style>
         body {
+            margin: 0;
+            padding: 50px 20px;
             display: flex;
-            justify-content: space-around;
+            justify-content: center;
             align-items: center;
-            padding: 50px;
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
+            font-family: sans-serif;
+            background-color: #ffffff;
         }
 
-        .container {
+        .wrapper {
             display: flex;
-            align-items: center;
+            align-items: center; /* Aligns items vertically in the center */
             justify-content: space-between;
             width: 100%;
-            max-width: 1000px;
+            max-width: 1200px;
         }
 
-        /* Image 1: No distortion, 18px radius, 33% width */
-        .img-rounded {
+        /* Image 1: width 33%, height 300px (implied), radius 18px, no distortion */
+        .box-left {
             width: 33%;
             height: 300px;
             border-radius: 18px;
-            object-fit: cover; /* Prevents distortion */
+            object-fit: cover; /* Key for "no distortion" */
+            display: block;
         }
 
-        /* Image 2: 150px circle, border, no distortion */
-        .img-circle {
+        /* Image 2: circle, size 150px, border, no distortion */
+        .box-center {
             width: 150px;
             height: 150px;
-            border-radius: 50%;
-            border: 2px solid #333;
-            object-fit: cover; /* Prevents distortion */
+            border-radius: 50%; /* Makes it a circle */
+            border: 1px solid #000; /* border 150px label likely refers to circle size */
+            object-fit: cover; /* Key for "no distortion" */
         }
 
-        /* Image 3: Distortion, 33% width, 300px height */
-        .img-distorted {
+        /* Image 3: width 33%, height 300px, distortion */
+        .box-right {
             width: 33%;
             height: 300px;
-            object-fit: fill; /* Forces distortion to fill the container */
-        }
-
-        /* Placeholder styles for clarity */
-        img {
-            background-color: #ddd;
+            object-fit: fill; /* Key for "distortion" - stretches to fit */
+            display: block;
         }
     </style>
 </head>
 <body>
 
-    <div class="container">
-        <img src="https://picsum.photos/id/10/800/1200" alt="Paris" class="img-rounded">
+    <div class="wrapper">
+        <img src="https://picsum.photos/id/10/800/1000" class="box-left" alt="No Distortion">
 
-        <img src="https://picsum.photos/id/1011/400/400" alt="Mountain" class="img-circle">
+        <img src="https://picsum.photos/id/1011/500/500" class="box-center" alt="Circle">
 
-        <img src="https://picsum.photos/id/10/800/1200" alt="Paris Distorted" class="img-distorted">
+        <img src="https://picsum.photos/id/10/800/1000" class="box-right" alt="Distortion">
     </div>
 
 </body>
