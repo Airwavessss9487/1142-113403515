@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Designer-Engineer Collaboration Button</title>
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background-color: #f0f0f0;
+        }
+
+        .spec-button {
+            /* Basic Box Model based on specs */
+            height: 22px;               /* size: h22 */
+            border-radius: 8px;         /* R8 */
+            
+            /* Visual Styles */
+            background-color: #ffffff;  /* background #ffffff */
+            border: 1px solid #f2f2f2;  /* outline 1px #f2f2f2 */
+            
+            /* Typography */
+            font-family: 'Roboto', sans-serif; /* Roboto Regular */
+            font-size: 13px;            /* 13px */
+            color: #2f2f2f;             /* Color: #2f2f2f */
+            
+            /* Layout Adjustment */
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0 12px;            /* Horizontal padding for text breathing room */
+            cursor: pointer;
+            box-sizing: border-box;     /* Ensures height stays exactly 22px */
+            transition: background-color 0.2s ease;
+        }
+
+        /* Subtle hover effect for better UX */
+        .spec-button:hover {
+            background-color: #fafafa;
+        }
+    </style>
+</head>
+<body>
+
+    <button class="spec-button">查看資訊</button>
+
+</body>
+</html>
