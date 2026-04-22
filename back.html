@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Layout Exercise</title>
+    <style>
+        /* Base Styles (Colors and Padding) */
+        body {
+            background-color: #4da6ff; /* Blue background */
+            margin: 0;
+            padding: 20px;
+            font-family: sans-serif;
+            display: flex;
+            justify-content: center;
+        }
+
+        .container {
+            background-color: white;
+            padding: 15px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 800px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .header-box {
+            background-color: #a6d44d; /* Light green */
+            height: 120px;
+            width: 100%;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: row; /* Default for Desktop (b) */
+            gap: 10px;
+        }
+
+        .content-box {
+            background-color: #00bcd4; /* Teal */
+            height: 100px;
+            flex: 1; /* Equal width columns */
+        }
+
+        .footer-wrapper {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr); /* 4 small boxes */
+            gap: 10px;
+        }
+
+        .footer-box {
+            background-color: #eeeeee; /* Light grey */
+            height: 50px;
+        }
+
+        /* --- Media Query for Mobile (a) --- */
+        @media (max-width: 480px) {
+            .content-wrapper {
+                flex-direction: column; /* Stack teal boxes vertically */
+            }
+
+            .footer-wrapper {
+                grid-template-columns: repeat(2, 1fr); /* 2x2 grid for footer */
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header-box"></div>
+
+        <div class="content-wrapper">
+            <div class="content-box"></div>
+            <div class="content-box"></div>
+            <div class="content-box"></div>
+        </div>
+
+        <div class="footer-wrapper">
+            <div class="footer-box"></div>
+            <div class="footer-box"></div>
+            <div class="footer-box"></div>
+            <div class="footer-box"></div>
+        </div>
+    </div>
+
+</body>
+</html>
