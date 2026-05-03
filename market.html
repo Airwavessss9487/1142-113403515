@@ -1,0 +1,616 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>珍藏大師 Master Collect - 實體資產數位化平台</title>
+    <!-- 引入 Tailwind CSS 與 Lucide 圖標庫 -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap');
+        
+        body {
+            font-family: 'Noto Sans TC', sans-serif;
+            background-color: #F8FAFC;
+            overflow: hidden; /* 由容器控制捲動 */
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .nav-item {
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        
+        .nav-item i {
+            transition: transform 0.2s ease;
+        }
+        .nav-item:hover i {
+            transform: scale(1.1);
+        }
+
+        .chart-bar {
+            transition: height 1s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* 玻璃擬態 */
+        .glass {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+    </style>
+</head>
+<body class="text-slate-900">
+
+    <div class="flex h-screen overflow-hidden">
+        <!-- 側邊欄 (Sidebar) -->
+        <aside class="w-20 lg:w-72 bg-white border-r border-slate-100 flex flex-col p-4 lg:p-6 sticky top-0 h-screen z-30 transition-all duration-300 shrink-0">
+            <!-- 頂部 Logo 區塊 -->
+            <div class="flex items-center gap-3 mb-10 px-1 justify-center lg:justify-start">
+                <div class="w-12 h-12 bg-indigo-600 rounded-2xl flex items-center justify-center text-white shadow-xl shadow-indigo-100 shrink-0">
+                    <i data-lucide="package" class="w-7 h-7"></i>
+                </div>
+                <div class="hidden lg:block overflow-hidden">
+                    <h1 class="font-black text-xl tracking-tight leading-none">珍藏大師</h1>
+                    <p class="text-[10px] text-slate-400 font-bold uppercase tracking-widest mt-1">Master Collect</p>
+                </div>
+            </div>
+
+            <!-- 主導航選單 -->
+            <nav class="flex-1 space-y-2 overflow-y-auto no-scrollbar" id="sidebar-nav">
+                <!-- 由 JavaScript 動態渲染 -->
+            </nav>
+
+            <!-- 底部功能與錢包狀態 -->
+            <div class="mt-auto pt-6 space-y-4">
+                <div class="hidden lg:block bg-slate-50 rounded-3xl p-5 border border-slate-100">
+                    <p class="text-[10px] font-bold text-slate-400 mb-1 flex items-center gap-1 uppercase tracking-tighter">
+                        <i data-lucide="wallet" class="w-3 h-3 text-indigo-500"></i> 當前餘額
+                    </p>
+                    <p class="text-xl font-black text-indigo-600 truncate" id="balance-display">NT$ 0</p>
+                </div>
+                <!-- 快捷上架按鈕 -->
+                <button onclick="toggleModal(true)" class="w-full bg-indigo-600 text-white py-4 rounded-2xl font-black flex items-center justify-center gap-2 shadow-lg shadow-indigo-200 hover:bg-indigo-700 transition-all active:scale-95 group">
+                    <i data-lucide="camera" class="w-5 h-5 group-hover:rotate-12 transition-transform"></i>
+                    <span class="hidden lg:inline">實體上架</span>
+                </button>
+            </div>
+        </aside>
+
+        <!-- 主畫面區 (Main Content) -->
+        <main class="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+            <!-- 頂部標頭 Header -->
+            <header class="h-20 glass border-b border-slate-100 flex items-center justify-between px-6 lg:px-10 sticky top-0 z-20 shrink-0">
+                <div class="relative w-full max-w-md">
+                    <i data-lucide="search" class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 w-5 h-5"></i>
+                    <input type="text" id="global-search" oninput="handleSearch(this.value)" placeholder="搜尋收藏、品牌或分類..." class="w-full bg-slate-100/50 border-none rounded-2xl py-2.5 pl-12 pr-4 text-sm focus:ring-2 focus:ring-indigo-500/20 outline-none font-medium transition-all">
+                </div>
+                
+                <div class="flex items-center gap-3 lg:gap-5">
+                    <button class="p-2.5 text-slate-400 hover:bg-slate-100 rounded-xl relative transition-colors">
+                        <i data-lucide="bell" class="w-5 h-5"></i>
+                        <span class="absolute top-2.5 right-2.5 w-2 h-2 bg-rose-500 rounded-full border-2 border-white"></span>
+                    </button>
+                    <button class="p-2.5 text-slate-400 hover:bg-slate-100 rounded-xl transition-colors"><i data-lucide="heart" class="w-5 h-5"></i></button>
+                    <div class="flex items-center gap-3 pl-2 border-l border-slate-100 ml-2">
+                        <div class="hidden md:block text-right">
+                            <p class="text-xs font-black text-slate-800">阿基米德</p>
+                            <p class="text-[10px] font-bold text-slate-400">高級會員</p>
+                        </div>
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-indigo-400 flex items-center justify-center text-white font-bold shadow-md shadow-indigo-100 cursor-pointer transition-transform hover:scale-105">A</div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- 內容顯示容器 (可捲動區) -->
+            <div id="main-content-scroll" class="flex-1 overflow-y-auto no-scrollbar scroll-smooth">
+                <div id="main-content" class="p-6 lg:p-10 max-w-7xl mx-auto w-full fade-in">
+                    <!-- 內容由 JS 注入 -->
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- 上架互動彈窗 (Modal) -->
+    <div id="upload-modal" class="fixed inset-0 z-50 hidden flex items-center justify-center p-4 md:p-6">
+        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm" onclick="toggleModal(false)"></div>
+        <div class="bg-white w-full max-w-4xl rounded-[2.5rem] shadow-2xl relative overflow-hidden flex flex-col md:flex-row h-[85vh] md:h-[70vh] scale-95 transition-transform duration-300" id="modal-container">
+             <!-- 相機/預覽區域 -->
+             <div id="modal-camera-area" class="flex-1 bg-slate-900 relative flex items-center justify-center p-8 text-white">
+                <!-- 由 updateUploadStep 渲染 -->
+             </div>
+             <!-- 表單區域 -->
+             <div class="w-full md:w-[380px] p-8 md:p-10 flex flex-col bg-white border-l border-slate-50">
+                <div class="flex justify-between items-center mb-8">
+                   <div>
+                      <h2 class="text-2xl font-black text-slate-800 tracking-tight">實體數位化</h2>
+                      <p class="text-xs font-bold text-slate-400">數位雙生技術掃描</p>
+                   </div>
+                   <button onclick="toggleModal(false)" class="p-2 text-slate-300 hover:text-slate-900 transition-colors"><i data-lucide="x" class="w-6 h-6"></i></button>
+                </div>
+                <div class="space-y-6 flex-1">
+                   <div class="space-y-2">
+                      <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">物件名稱</label>
+                      <input type="text" id="modal-name" placeholder="例如: 1969 勞力士潛航者" class="w-full bg-slate-50 border-none rounded-xl px-4 py-3.5 font-bold outline-none ring-1 ring-slate-100 focus:ring-2 focus:ring-indigo-500/20 transition-all">
+                   </div>
+                   <div class="space-y-2">
+                      <label class="text-[10px] font-black text-slate-400 uppercase tracking-widest">歸屬類別</label>
+                      <select id="modal-category" class="w-full bg-slate-50 border-none rounded-xl px-4 py-3.5 font-bold outline-none ring-1 ring-slate-100 focus:ring-2 focus:ring-indigo-500/20 appearance-none transition-all cursor-pointer"></select>
+                   </div>
+                </div>
+                <div class="pt-6 border-t border-slate-50">
+                    <button id="modal-submit-btn" disabled onclick="handleFinalSubmit()" class="w-full py-4 rounded-2xl font-black transition-all bg-slate-100 text-slate-300 cursor-not-allowed">
+                        確認上架
+                    </button>
+                    <p class="text-[10px] text-center text-slate-400 mt-4 font-medium">點擊確認即代表同意產權數位化協議</p>
+                </div>
+             </div>
+        </div>
+    </div>
+
+    <script>
+        // --- 核心狀態管理 ---
+        let state = {
+            activeTab: 'dashboard',
+            userBalance: 1500000,
+            searchQuery: '',
+            items: [
+                { id: 101, categoryId: 1, name: 'Rolex Submariner 1970', price: 320000, image: 'https://images.unsplash.com/photo-1547996111-f7cb39e3d039?auto=format&fit=crop&q=80&w=400', owner: 'Me', tag: '傳承' },
+                { id: 102, categoryId: 1, name: 'Omega Speedmaster', price: 180000, image: 'https://images.unsplash.com/photo-1524592094714-0f0654e20314?auto=format&fit=crop&q=80&w=400', owner: 'Me', tag: '經典' }
+            ],
+            marketItems: [
+                { id: 201, name: 'Patek Philippe Nautilus', price: 2450000, image: 'https://images.unsplash.com/photo-1548433491-c84b30d66a68?auto=format&fit=crop&q=80&w=400', seller: 'WatchCollector_HK', category: '鐘錶' },
+                { id: 202, name: 'Supreme x LV Trunk', price: 1200000, image: 'https://images.unsplash.com/photo-1584917865442-de89df76afd3?auto=format&fit=crop&q=80&w=400', seller: 'HypeMaster_88', category: '潮流' },
+                { id: 203, name: 'Jordan 1 Retro Chicago', price: 55000, image: 'https://images.unsplash.com/photo-1600185365483-26d7a4cc7519?auto=format&fit=crop&q=80&w=400', seller: 'SneakerHead_TW', category: '潮流' },
+                { id: 204, name: 'Gibson Les Paul 1959', price: 880000, image: 'https://images.unsplash.com/photo-1550291652-6ea9114a47b1?auto=format&fit=crop&q=80&w=400', seller: 'VintageGuitar_Lover', category: '音樂' }
+            ]
+        };
+
+        const COLLECTIONS = [
+            { id: 1, name: '復古機械錶', category: '鐘錶', baseItems: 2, totalValue: 850000, color: 'bg-indigo-600', icon: 'watch' },
+            { id: 2, name: '經典黑膠', category: '音樂', baseItems: 1, totalValue: 12000, color: 'bg-purple-600', icon: 'disc' },
+            { id: 3, name: '稀有球鞋', category: '潮流', baseItems: 0, totalValue: 0, color: 'bg-orange-600', icon: 'layers' },
+            { id: 4, name: '藝術油畫', category: '藝術', baseItems: 0, totalValue: 0, color: 'bg-emerald-600', icon: 'palette' },
+        ];
+
+        // --- 功能函數 ---
+        function refreshIcons() {
+            if (window.lucide) {
+                lucide.createIcons();
+            }
+        }
+
+        function handleSearch(query) {
+            state.searchQuery = query.trim().toLowerCase();
+            render();
+        }
+
+        function switchTab(id) {
+            state.activeTab = id;
+            // 切換分頁時重置捲動位置
+            document.getElementById('main-content-scroll').scrollTop = 0;
+            render();
+        }
+
+        // --- 核心渲染引擎 ---
+        function render() {
+            renderSidebar();
+            
+            const container = document.getElementById('main-content');
+            const balanceEl = document.getElementById('balance-display');
+            if (balanceEl) balanceEl.innerText = `NT$ ${state.userBalance.toLocaleString()}`;
+            
+            // 頁面切換邏輯
+            switch(state.activeTab) {
+                case 'dashboard': renderDashboard(container); break;
+                case 'collections': renderCollections(container); break;
+                case 'market': renderMarket(container); break;
+                case 'analytics': renderAnalytics(container); break;
+                default: renderDashboard(container);
+            }
+
+            refreshIcons();
+        }
+
+        function renderSidebar() {
+            const nav = document.getElementById('sidebar-nav');
+            const menuItems = [
+                { id: 'dashboard', label: '首頁概覽', icon: 'layout-grid' },
+                { id: 'collections', label: '我的收藏', icon: 'box' },
+                { id: 'market', label: '交易市場', icon: 'shopping-cart' },
+                { id: 'analytics', label: '趨勢報告', icon: 'bar-chart-3' }
+            ];
+
+            nav.innerHTML = menuItems.map(item => `
+                <button onclick="switchTab('${item.id}')" class="nav-item w-full flex items-center justify-center lg:justify-start gap-3 px-4 py-3.5 rounded-2xl transition-all ${state.activeTab === item.id ? 'bg-indigo-600 text-white shadow-xl shadow-indigo-100' : 'text-slate-500 hover:bg-slate-50'}">
+                    <i data-lucide="${item.icon}" class="w-6 h-6 shrink-0"></i>
+                    <span class="font-black text-sm hidden lg:block overflow-hidden whitespace-nowrap">${item.label}</span>
+                </button>
+            `).join('');
+        }
+
+        function renderDashboard(container) {
+            const totalAssets = state.items.reduce((sum, i) => sum + i.price, 0);
+
+            container.innerHTML = `
+                <div class="space-y-10">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="md:col-span-1 bg-indigo-600 p-8 rounded-[2.5rem] text-white shadow-2xl shadow-indigo-100 relative overflow-hidden group">
+                            <i data-lucide="sparkles" class="absolute -right-4 -top-4 w-24 h-24 text-white/10 rotate-12"></i>
+                            <p class="text-sm font-bold opacity-70 mb-1">資產總估值</p>
+                            <h2 class="text-4xl font-black mb-6">NT$ ${totalAssets.toLocaleString()}</h2>
+                            <div class="inline-flex items-center gap-1 text-xs font-bold bg-white/20 px-3 py-1.5 rounded-full backdrop-blur-sm">
+                                <i data-lucide="trending-up" class="w-3.5 h-3.5"></i> 本月成長 12.5%
+                            </div>
+                        </div>
+                        <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm flex flex-col justify-between">
+                            <div class="flex justify-between items-start">
+                                <div><p class="text-xs font-bold text-slate-400 tracking-widest mb-1 uppercase">收藏完整度</p><h3 class="text-2xl font-black text-slate-800">85% 實體驗證</h3></div>
+                                <div class="p-3 bg-emerald-50 rounded-2xl"><i data-lucide="shield-check" class="text-emerald-500 w-6 h-6"></i></div>
+                            </div>
+                            <div class="w-full bg-slate-100 h-2.5 rounded-full mt-4"><div class="bg-emerald-500 h-full w-[85%] rounded-full shadow-sm shadow-emerald-200"></div></div>
+                        </div>
+                        <div class="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm flex flex-col justify-between">
+                            <div><p class="text-xs font-bold text-slate-400 tracking-widest mb-1 uppercase">市場狀態</p><h3 class="text-2xl font-black text-slate-800">高活躍度</h3></div>
+                            <button onclick="switchTab('market')" class="text-indigo-600 text-sm font-bold flex items-center gap-1 hover:gap-2 transition-all">進入交易市場 <i data-lucide="chevron-right" class="w-4 h-4"></i></button>
+                        </div>
+                    </div>
+
+                    <div class="flex items-center gap-3"><div class="w-1.5 h-6 bg-indigo-600 rounded-full"></div><h2 class="text-2xl font-black text-slate-800 tracking-tight">資產分布結構</h2></div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div class="bg-white p-8 rounded-[3rem] border border-slate-100 space-y-6">
+                            ${COLLECTIONS.map(col => {
+                                const currentVal = col.totalValue + (col.id === 1 ? state.items.reduce((s,i)=>s+i.price,0) : 0);
+                                const count = col.baseItems + (col.id === 1 ? state.items.length : 0);
+                                return `
+                                <div class="flex items-center justify-between group cursor-pointer hover:bg-slate-50 p-2 rounded-2xl transition-all">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 rounded-2xl ${col.color} text-white flex items-center justify-center shadow-lg shadow-slate-100">
+                                            <i data-lucide="${col.icon}" class="w-5 h-5"></i>
+                                        </div>
+                                        <div><p class="font-black text-slate-800">${col.name}</p><p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">${col.category}</p></div>
+                                    </div>
+                                    <div class="text-right">
+                                        <p class="font-black text-slate-800">NT$ ${currentVal.toLocaleString()}</p>
+                                        <p class="text-[10px] font-bold text-slate-400">${count} 件物件</p>
+                                    </div>
+                                </div>
+                            `}).join('')}
+                        </div>
+                        <div class="bg-slate-900 p-10 rounded-[3rem] text-white flex flex-col justify-center text-center relative overflow-hidden shadow-2xl">
+                            <i data-lucide="fingerprint" class="absolute -right-6 -bottom-6 w-32 h-32 opacity-10 rotate-12"></i>
+                            <h4 class="text-2xl font-black mb-4">掌握實體數位產權</h4>
+                            <p class="text-slate-400 text-sm mb-8 leading-relaxed max-w-sm mx-auto">您的每一件收藏皆通過 3D 結構光掃描驗證，確保在數位世界的唯一性與安全性。</p>
+                            <button onclick="switchTab('analytics')" class="py-4 bg-white/10 hover:bg-white/20 rounded-2xl font-bold transition-all text-sm border border-white/5 active:scale-95">查看市場趨勢報告</button>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderCollections(container) {
+            const filteredItems = state.items.filter(item => 
+                item.name.toLowerCase().includes(state.searchQuery)
+            );
+
+            container.innerHTML = `
+                <div class="space-y-8">
+                    <div class="flex justify-between items-end">
+                        <div>
+                            <h2 class="text-3xl font-black text-slate-800 tracking-tight">我的保險箱</h2>
+                            <p class="text-slate-400 font-bold mt-1 text-sm">存放與管理您已數位化的實體資產</p>
+                        </div>
+                        ${state.searchQuery ? `<button onclick="handleSearch(''); document.getElementById('global-search').value='';" class="text-xs font-bold text-indigo-600 bg-indigo-50 px-4 py-2 rounded-xl border border-indigo-100">清除篩選: "${state.searchQuery}"</button>` : ''}
+                    </div>
+                    
+                    ${filteredItems.length ? `
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+                            ${filteredItems.map(item => `
+                                <div class="bg-white p-5 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-xl hover:-translate-y-1 transition-all group">
+                                    <div class="h-56 rounded-[2rem] overflow-hidden mb-5 relative">
+                                        <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-1000">
+                                        <div class="absolute top-4 left-4 bg-white/90 backdrop-blur-md px-3 py-1.5 rounded-xl text-[10px] font-black text-indigo-600 shadow-sm">${item.tag || '已驗證'}</div>
+                                    </div>
+                                    <div class="px-1">
+                                        <h4 class="font-black text-xl mb-1 text-slate-800">${item.name}</h4>
+                                        <p class="text-indigo-600 font-black text-sm mb-5">市場估值 NT$ ${item.price.toLocaleString()}</p>
+                                        <div class="flex gap-2 border-t border-slate-50 pt-4 mt-2">
+                                            <span class="px-3 py-1.5 bg-slate-100 text-[10px] font-black rounded-lg uppercase">3D 掃描</span>
+                                            <span class="px-3 py-1.5 bg-indigo-50 text-indigo-600 text-[10px] font-black rounded-lg uppercase">數位產權</span>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : `
+                        <div class="py-24 text-center bg-white rounded-[3rem] border-2 border-dashed border-slate-100">
+                            <div class="w-20 h-20 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 text-slate-300">
+                                <i data-lucide="package-search" class="w-10 h-10"></i>
+                            </div>
+                            <p class="text-slate-400 font-black text-lg">目前保險箱內沒有相符的物件</p>
+                            <button onclick="toggleModal(true)" class="mt-4 text-indigo-600 font-bold text-sm">立即上架第一件收藏</button>
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+
+        function renderMarket(container) {
+            const filteredMarket = state.marketItems.filter(item => 
+                item.name.toLowerCase().includes(state.searchQuery) || 
+                item.category.toLowerCase().includes(state.searchQuery)
+            );
+
+            container.innerHTML = `
+                <div class="space-y-8">
+                    <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
+                        <div>
+                            <h2 class="text-3xl font-black text-slate-800 tracking-tight">全球交易市場</h2>
+                            <p class="text-slate-400 font-bold mt-1 text-sm">即時產權轉讓，安全、透明、具法律效力。</p>
+                        </div>
+                        <div class="flex bg-white p-1.5 rounded-2xl border border-slate-100 shadow-sm overflow-x-auto no-scrollbar">
+                             <button class="px-6 py-2 bg-indigo-600 text-white rounded-xl text-xs font-black whitespace-nowrap">全部</button>
+                             <button class="px-6 py-2 bg-transparent rounded-xl text-xs font-black text-slate-400 hover:text-slate-600 whitespace-nowrap">鐘錶</button>
+                             <button class="px-6 py-2 bg-transparent rounded-xl text-xs font-black text-slate-400 hover:text-slate-600 whitespace-nowrap">潮流</button>
+                             <button class="px-6 py-2 bg-transparent rounded-xl text-xs font-black text-slate-400 hover:text-slate-600 whitespace-nowrap">音樂</button>
+                        </div>
+                    </div>
+
+                    ${filteredMarket.length ? `
+                        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            ${filteredMarket.map(item => `
+                                <div class="bg-white p-4 rounded-[2.5rem] border border-slate-50 shadow-xl shadow-slate-200/40 hover:shadow-2xl transition-all group flex flex-col">
+                                    <div class="relative h-48 rounded-[2rem] overflow-hidden mb-5 shrink-0">
+                                        <img src="${item.image}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700">
+                                        <div class="absolute top-4 right-4 bg-white/90 backdrop-blur-md p-2.5 rounded-2xl shadow-sm cursor-pointer hover:bg-rose-500 hover:text-white transition-all group/heart">
+                                            <i data-lucide="heart" class="w-4 h-4 text-slate-400 group-hover/heart:text-white group-hover/heart:fill-current"></i>
+                                        </div>
+                                    </div>
+                                    <div class="px-2 flex-1 flex flex-col">
+                                        <h4 class="font-black text-slate-800 leading-tight mb-2 line-clamp-2 h-10">${item.name}</h4>
+                                        <p class="text-[10px] font-bold text-slate-400 mb-6 flex items-center gap-1.5 uppercase tracking-widest"><i data-lucide="user" class="w-3 h-3 text-indigo-400"></i> ${item.seller}</p>
+                                        <div class="mt-auto flex items-center justify-between gap-4">
+                                            <div>
+                                                <p class="text-[9px] font-bold text-slate-300 uppercase tracking-widest mb-0.5">當前售價</p>
+                                                <p class="font-black text-indigo-600 text-lg">NT$ ${item.price.toLocaleString()}</p>
+                                            </div>
+                                            <button onclick="handlePurchase('${item.name}')" class="p-4 bg-indigo-600 text-white rounded-2xl shadow-lg shadow-indigo-100 hover:bg-indigo-700 active:scale-90 transition-all flex-shrink-0">
+                                                <i data-lucide="shopping-bag" class="w-5 h-5"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                            `).join('')}
+                        </div>
+                    ` : `
+                        <div class="py-20 text-center">
+                            <i data-lucide="search-x" class="w-12 h-12 text-slate-200 mx-auto mb-4"></i>
+                            <p class="text-slate-400 font-bold">市場中暫無符合條件的收藏品</p>
+                        </div>
+                    `}
+                </div>
+            `;
+        }
+
+        function renderAnalytics(container) {
+            const dataValues = [65, 45, 85, 55, 95, 40, 75];
+            const labels = ['週一', '週二', '週三', '週四', '週五', '週六', '週日'];
+
+            container.innerHTML = `
+                <div class="space-y-10">
+                    <div class="flex items-end justify-between">
+                         <div>
+                            <h2 class="text-3xl font-black text-slate-800 tracking-tight">資產趨勢分析</h2>
+                            <p class="text-slate-400 font-bold mt-1 text-sm">基於全球二級市場即時成交大數據</p>
+                         </div>
+                         <div class="text-right hidden sm:block">
+                             <p class="text-[10px] font-black text-slate-400 uppercase tracking-widest mb-1">數據最後更新</p>
+                             <div class="flex items-center justify-end gap-2 text-sm font-black text-slate-800">
+                                <span class="w-2 h-2 bg-emerald-500 rounded-full animate-pulse"></span> 今天 14:30 PM
+                             </div>
+                         </div>
+                    </div>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+                        <div class="lg:col-span-2 bg-white p-8 md:p-10 rounded-[3rem] border border-slate-100 shadow-sm relative overflow-hidden">
+                            <div class="flex flex-col md:flex-row md:items-center justify-between mb-12 gap-4">
+                                <h3 class="font-black text-xl text-slate-800">估值變化趨勢 (週)</h3>
+                                <div class="flex gap-6">
+                                    <div class="flex items-center gap-2"><div class="w-3 h-3 bg-indigo-600 rounded-full"></div><span class="text-xs font-bold text-slate-500 uppercase">我的收藏</span></div>
+                                    <div class="flex items-center gap-2"><div class="w-3 h-3 bg-slate-200 rounded-full"></div><span class="text-xs font-bold text-slate-500 uppercase">市場平均</span></div>
+                                </div>
+                            </div>
+                            <div class="h-72 flex items-end justify-between gap-3 md:gap-6 px-2 md:px-4 border-b border-slate-50 relative z-10">
+                                ${dataValues.map((h, i) => `
+                                    <div class="flex-1 flex flex-col items-center gap-4 group">
+                                        <div class="relative w-full max-w-[40px] h-full flex items-end">
+                                            <div class="chart-bar bg-indigo-600 w-full rounded-t-2xl rounded-b-lg group-hover:bg-indigo-500 transition-all cursor-pointer shadow-lg shadow-indigo-100" style="height: ${h}%"></div>
+                                            <!-- Tooltip -->
+                                            <div class="absolute -top-12 left-1/2 -translate-x-1/2 bg-slate-800 text-white text-[10px] font-black px-3 py-1.5 rounded-xl opacity-0 group-hover:opacity-100 transition-all scale-75 group-hover:scale-100 pointer-events-none whitespace-nowrap shadow-xl z-20">
+                                                NT$ ${((h + 10) * 12000).toLocaleString()}
+                                            </div>
+                                        </div>
+                                        <span class="text-[10px] font-black text-slate-400 mb-2">${labels[i]}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+
+                        <div class="space-y-6">
+                            <div class="bg-indigo-600 p-8 rounded-[3rem] text-white shadow-xl shadow-indigo-100 group relative overflow-hidden">
+                                <i data-lucide="bot" class="absolute -right-2 -top-2 w-16 h-16 text-white/10 -rotate-12"></i>
+                                <h3 class="font-black mb-4 text-lg">AI 投資管家</h3>
+                                <p class="text-sm text-white/80 leading-relaxed mb-8">您的「復古機械錶」分類近期市場熱度上升 22%，建議長期持有以獲得更高潛在回報。</p>
+                                <div class="flex items-center gap-4 bg-white/10 p-5 rounded-[2rem] border border-white/10 backdrop-blur-md">
+                                    <div class="w-12 h-12 bg-amber-300 rounded-2xl flex items-center justify-center shrink-0 shadow-lg shadow-amber-900/20">
+                                        <i data-lucide="zap" class="text-indigo-900 w-6 h-6"></i>
+                                    </div>
+                                    <div>
+                                        <p class="text-[10px] font-bold uppercase opacity-60 tracking-widest">系統建議</p>
+                                        <p class="font-black text-white">長期持有 (Hold)</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="bg-white p-8 rounded-[3rem] border border-slate-100 shadow-sm">
+                                <h3 class="font-black text-slate-800 mb-8 flex items-center gap-2"><i data-lucide="pie-chart" class="w-5 h-5 text-indigo-500"></i> 資產佔比</h3>
+                                <div class="space-y-6">
+                                     <div class="space-y-2">
+                                         <div class="flex items-center justify-between">
+                                             <span class="text-xs font-black text-slate-500 uppercase tracking-widest">鐘錶</span>
+                                             <span class="text-sm font-black text-slate-800">75%</span>
+                                         </div>
+                                         <div class="w-full bg-slate-50 h-2.5 rounded-full overflow-hidden"><div class="bg-indigo-600 h-full w-[75%] rounded-full"></div></div>
+                                     </div>
+                                     <div class="space-y-2">
+                                         <div class="flex items-center justify-between">
+                                             <span class="text-xs font-black text-slate-500 uppercase tracking-widest">音樂</span>
+                                             <span class="text-sm font-black text-slate-800">15%</span>
+                                         </div>
+                                         <div class="w-full bg-slate-50 h-2.5 rounded-full overflow-hidden"><div class="bg-purple-600 h-full w-[15%] rounded-full"></div></div>
+                                     </div>
+                                     <div class="space-y-2">
+                                         <div class="flex items-center justify-between">
+                                             <span class="text-xs font-black text-slate-500 uppercase tracking-widest">其他</span>
+                                             <span class="text-sm font-black text-slate-800">10%</span>
+                                         </div>
+                                         <div class="w-full bg-slate-50 h-2.5 rounded-full overflow-hidden"><div class="bg-slate-200 h-full w-[10%] rounded-full"></div></div>
+                                     </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        // --- 互動處理 ---
+        function handlePurchase(itemName) {
+            // 自定義通知替代 alert
+            const notification = document.createElement('div');
+            notification.className = 'fixed bottom-10 left-1/2 -translate-x-1/2 bg-slate-900 text-white px-8 py-4 rounded-2xl font-black shadow-2xl z-[100] fade-in';
+            notification.innerHTML = `<div class="flex items-center gap-3"><i data-lucide="check-circle-2" class="text-emerald-400"></i> 已提交購買申請：${itemName}</div>`;
+            document.body.appendChild(notification);
+            refreshIcons();
+            setTimeout(() => notification.remove(), 3000);
+        }
+
+        function toggleModal(show) {
+            const modal = document.getElementById('upload-modal');
+            const container = document.getElementById('modal-container');
+            if (show) {
+                modal.classList.remove('hidden');
+                setTimeout(() => container.classList.remove('scale-95'), 10);
+                updateUploadStep('idle');
+                const select = document.getElementById('modal-category');
+                select.innerHTML = COLLECTIONS.map(c => `<option value="${c.id}">${c.name}</option>`).join('');
+            } else {
+                container.classList.add('scale-95');
+                setTimeout(() => modal.classList.add('hidden'), 200);
+            }
+            refreshIcons();
+        }
+
+        function updateUploadStep(step) {
+            const area = document.getElementById('modal-camera-area');
+            const submitBtn = document.getElementById('modal-submit-btn');
+
+            if (step === 'idle') {
+                area.innerHTML = `
+                    <div class="text-center p-6">
+                        <div class="w-24 h-24 bg-white/10 rounded-[2rem] flex items-center justify-center mx-auto mb-8 border border-white/20 shadow-2xl backdrop-blur-md">
+                            <i data-lucide="camera" class="w-10 h-10"></i>
+                        </div>
+                        <h3 class="text-2xl font-black mb-4">啟動數位化掃描</h3>
+                        <p class="text-indigo-200/60 text-sm mb-10 max-w-xs mx-auto font-medium">請確保收藏品放置在光線充足且背景單純的平面上。</p>
+                        <button onclick="simulateCapture()" class="bg-indigo-600 px-12 py-4 rounded-[1.5rem] font-black shadow-xl shadow-indigo-900/50 hover:bg-indigo-500 transition-all active:scale-95">啟動相機感測器</button>
+                    </div>
+                `;
+            } else if (step === 'capturing') {
+                area.innerHTML = `
+                    <div class="text-center">
+                        <div class="relative w-32 h-32 mx-auto mb-8">
+                            <div class="absolute inset-0 border-4 border-indigo-500/20 rounded-full"></div>
+                            <div class="absolute inset-0 border-4 border-indigo-500 rounded-full border-t-transparent animate-spin"></div>
+                            <i data-lucide="layers" class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-10 h-10 text-indigo-400"></i>
+                        </div>
+                        <p class="font-black text-indigo-200 tracking-widest uppercase text-xs">正在分析 3D 結構光特徵...</p>
+                    </div>
+                `;
+            } else if (step === 'preview') {
+                area.innerHTML = `
+                    <div class="w-full h-full p-4 relative group">
+                        <img src="https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=800" class="w-full h-full object-cover rounded-[2rem] fade-in shadow-2xl">
+                        <div class="absolute inset-0 bg-indigo-600/20 rounded-[2rem] flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity">
+                            <span class="bg-white text-indigo-600 px-6 py-3 rounded-2xl font-black shadow-xl">重新掃描</span>
+                        </div>
+                        <div class="absolute bottom-10 left-1/2 -translate-x-1/2 bg-emerald-500/90 backdrop-blur-md text-white px-6 py-2.5 rounded-full font-black text-xs flex items-center gap-2">
+                             <i data-lucide="check" class="w-4 h-4"></i> 掃描完成：精密度 99.8%
+                        </div>
+                    </div>`;
+                submitBtn.disabled = false;
+                submitBtn.className = "w-full py-4 rounded-2xl font-black bg-indigo-600 text-white shadow-xl shadow-indigo-100 active:scale-95 transition-all hover:bg-indigo-700 cursor-pointer";
+            }
+            refreshIcons();
+        }
+
+        function simulateCapture() {
+            updateUploadStep('capturing');
+            setTimeout(() => updateUploadStep('preview'), 2500);
+        }
+
+        function handleFinalSubmit() {
+            const nameInput = document.getElementById('modal-name');
+            const name = nameInput.value.trim() || "新收藏物件";
+            
+            // 加入新物件
+            state.items.unshift({
+                id: Date.now(),
+                name: name,
+                price: Math.floor(Math.random() * 80000) + 20000,
+                image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=400',
+                owner: 'Me',
+                tag: '新上架'
+            });
+
+            // 扣除模擬手續費
+            state.userBalance -= 1000;
+            
+            // UI 反饋與跳轉
+            nameInput.value = "";
+            toggleModal(false);
+            
+            // 延遲顯示，讓 Modal 關閉後再切換
+            setTimeout(() => {
+                switchTab('collections');
+                // 觸發小彩蛋通知
+                const successMsg = document.createElement('div');
+                successMsg.className = 'fixed top-6 left-1/2 -translate-x-1/2 bg-emerald-500 text-white px-10 py-4 rounded-3xl font-black shadow-2xl z-[100] fade-in flex items-center gap-4';
+                successMsg.innerHTML = '<i data-lucide="check-circle" class="w-6 h-6"></i> 實體資產已完成數位驗證並存入保險箱';
+                document.body.appendChild(successMsg);
+                refreshIcons();
+                setTimeout(() => successMsg.remove(), 4000);
+            }, 300);
+        }
+
+        // --- 初始化 ---
+        window.onload = () => {
+            render();
+            // 首屏動畫
+            document.getElementById('main-content').classList.add('fade-in');
+        };
+    </script>
+</body>
+</html>
