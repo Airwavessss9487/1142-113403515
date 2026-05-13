@@ -1,10 +1,41 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <title>JavaScript Object Practice</title>
+    <style>
+        body {
+            font-family: sans-serif;
+            line-height: 1.6;
+            padding: 20px;
+        }
+        pre {
+            background-color: #f4f4f4;
+            padding: 15px;
+            border-radius: 5px;
+            border: 1px solid #ddd;
+        }
+        .section-title {
+            font-weight: bold;
+            color: #333;
+            margin-top: 20px;
+        }
+    </style>
+</head>
 <body>
-    <h2>Object Properties Management</h2>
-    <div id="output"></div>
+
+    <h2>JavaScript Object Practice</h2>
+    <p>Student Name: 施竑宇</p>
+    <p>Student ID: 113403515</p>
+
+    <div class="section-title">1. List all properties:</div>
+    <pre id="properties-list"></pre>
+
+    <div class="section-title">2. Object after deleting 'age' property:</div>
+    <pre id="final-object"></pre>
 
     <script>
+        // Sample object
         var Person = {
             firstName : "Tony",
             lastName : "Lee",
@@ -12,17 +43,22 @@
             eyeColor : "Blue"
         };
 
-        let outputDiv = document.getElementById('output');
-        
-        let content = "<b>Original properties:</b><br>";
-        content += Object.keys(Person).join(", ") + "<br><br>";
+        // 1. List all properties
+        var props = [];
+        for (var prop in Person) {
+            props.push(prop);
+        }
+        document.getElementById('properties-list').textContent = props.join('\n');
 
+        // 2. Delete the age property
         delete Person.age;
 
-        content += "<b>After deleting 'age':</b><br>";
-        content += JSON.stringify(Person);
-
-        outputDiv.innerHTML = content;
+        // 3. Print the object after deleting the property
+        // 使用 JSON.stringify 格式化輸出，使其易於閱讀
+        document.getElementById('final-object').textContent = JSON.stringify(Person, null, 4);
+        
+        // 同時輸出至控制台以便檢查
+        console.log("Final Object:", Person);
     </script>
 </body>
 </html>
