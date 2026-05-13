@@ -3,62 +3,38 @@
 <head>
     <meta charset="UTF-8">
     <title>JavaScript Object Practice</title>
-    <style>
-        body {
-            font-family: sans-serif;
-            line-height: 1.6;
-            padding: 20px;
-        }
-        pre {
-            background-color: #f4f4f4;
-            padding: 15px;
-            border-radius: 5px;
-            border: 1px solid #ddd;
-        }
-        .section-title {
-            font-weight: bold;
-            color: #333;
-            margin-top: 20px;
-        }
-    </style>
 </head>
 <body>
-
-    <h2>JavaScript Object Practice</h2>
-    <p>Student Name: 施竑宇</p>
-    <p>Student ID: 113403515</p>
-
-    <div class="section-title">1. List all properties:</div>
-    <pre id="properties-list"></pre>
-
-    <div class="section-title">2. Object after deleting 'age' property:</div>
-    <pre id="final-object"></pre>
+    <div id="output"></div>
 
     <script>
-        // Sample object
         var Person = {
-            firstName : "Tony",
-            lastName : "Lee",
-            age : 50,
-            eyeColor : "Blue"
+            firstName: "Tony",
+            lastName: "Lee",
+            age: 50,
+            eyeColor: "Blue"
         };
 
-        // 1. List all properties
-        var props = [];
-        for (var prop in Person) {
-            props.push(prop);
-        }
-        document.getElementById('properties-list').textContent = props.join('\n');
+        const outputDiv = document.getElementById('output');
 
-        // 2. Delete the age property
+        // 1. 列出所有屬性
+        let allProperties = Object.keys(Person).join(', ');
+        let p1 = document.createElement('p');
+        p1.textContent = "所有屬性: " + allProperties;
+        outputDiv.appendChild(p1);
+
+        // 2. 刪除 age 屬性
         delete Person.age;
 
-        // 3. Print the object after deleting the property
-        // 使用 JSON.stringify 格式化輸出，使其易於閱讀
-        document.getElementById('final-object').textContent = JSON.stringify(Person, null, 4);
-        
-        // 同時輸出至控制台以便檢查
-        console.log("Final Object:", Person);
+        // 3. 刪除後的物件狀態
+        let p2 = document.createElement('p');
+        p2.textContent = "刪除 age 後的物件: " + JSON.stringify(Person);
+        outputDiv.appendChild(p2);
+
+        // 顯示開發者資訊
+        let info = document.createElement('footer');
+        info.innerHTML = "<hr><p>姓名：施竑宇<br>學號：113403515</p>";
+        document.body.appendChild(info);
     </script>
 </body>
 </html>
