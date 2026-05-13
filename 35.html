@@ -1,13 +1,70 @@
 <!DOCTYPE html>
-<html lang="zh-TW">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>JavaScript Object Practice</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JavaScript Object Properties</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f6f8;
+            padding: 40px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: auto;
+            background-color: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            color: #333;
+            text-align: center;
+        }
+
+        h2 {
+            color: #2c3e50;
+            margin-top: 30px;
+        }
+
+        .box {
+            background-color: #eef3f7;
+            padding: 15px;
+            border-radius: 8px;
+            line-height: 1.8;
+            font-size: 18px;
+        }
+
+        .deleted {
+            color: red;
+            font-weight: bold;
+        }
+    </style>
 </head>
+
 <body>
-    <div id="output"></div>
+
+    <div class="container">
+        <h1>JavaScript Object Properties</h1>
+
+        <h2>Original Object Properties</h2>
+        <div id="originalProperties" class="box"></div>
+
+        <h2>Deleted Property</h2>
+        <div class="box">
+            The <span class="deleted">age</span> property has been deleted.
+        </div>
+
+        <h2>Object After Deleting Age</h2>
+        <div id="afterDelete" class="box"></div>
+    </div>
 
     <script>
+        // Sample object
         var Person = {
             firstName: "Tony",
             lastName: "Lee",
@@ -15,26 +72,27 @@
             eyeColor: "Blue"
         };
 
-        const outputDiv = document.getElementById('output');
+        // List all properties before deleting age
+        var originalOutput = "";
 
-        // 1. 列出所有屬性
-        let allProperties = Object.keys(Person).join(', ');
-        let p1 = document.createElement('p');
-        p1.textContent = "所有屬性: " + allProperties;
-        outputDiv.appendChild(p1);
+        for (var property in Person) {
+            originalOutput += property + " : " + Person[property] + "<br>";
+        }
 
-        // 2. 刪除 age 屬性
+        document.getElementById("originalProperties").innerHTML = originalOutput;
+
+        // Delete the age property
         delete Person.age;
 
-        // 3. 刪除後的物件狀態
-        let p2 = document.createElement('p');
-        p2.textContent = "刪除 age 後的物件: " + JSON.stringify(Person);
-        outputDiv.appendChild(p2);
+        // Print the object after deleting age
+        var afterDeleteOutput = "";
 
-        // 顯示開發者資訊
-        let info = document.createElement('footer');
-        info.innerHTML = "<hr><p>姓名：施竑宇<br>學號：113403515</p>";
-        document.body.appendChild(info);
+        for (var property in Person) {
+            afterDeleteOutput += property + " : " + Person[property] + "<br>";
+        }
+
+        document.getElementById("afterDelete").innerHTML = afterDeleteOutput;
     </script>
+
 </body>
 </html>
