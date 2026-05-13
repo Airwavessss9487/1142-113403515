@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<body>
+    <h2>Object Properties Management</h2>
+    <div id="output"></div>
+
+    <script>
+        var Person = {
+            firstName : "Tony",
+            lastName : "Lee",
+            age : 50,
+            eyeColor : "Blue"
+        };
+
+        let outputDiv = document.getElementById('output');
+        
+        let content = "<b>Original properties:</b><br>";
+        content += Object.keys(Person).join(", ") + "<br><br>";
+
+        delete Person.age;
+
+        content += "<b>After deleting 'age':</b><br>";
+        content += JSON.stringify(Person);
+
+        outputDiv.innerHTML = content;
+    </script>
+</body>
+</html>
