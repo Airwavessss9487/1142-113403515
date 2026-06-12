@@ -282,7 +282,7 @@ yes
 
 | Field | Your answer |
 |-------|------------|
-| Teammate's full name | 無絃紘 |
+| Teammate's full name | 吳絃紘 |
 | Teammate's student ID | 113403302 |
 
 #### What did this teammate deliver?
